@@ -32,10 +32,6 @@ def filter_operations_by_date(df: pd.DataFrame, date_str: str) -> list:
     """
     Фильтрует операции от первого числа месяца до переданной даты (включительно весь день).
     Возвращает отсортированный список словарей с операциями.
-
-    :param df: обработанный DataFrame с колонкой 'Дата операции' (тип datetime)
-    :param date_str: строка в формате "YYYY-MM-DD HH:MM:SS"
-    :return: список словарей, отсортированный по дате
     """
     # Преобразуем строку в datetime
     target_date = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")

@@ -226,4 +226,6 @@ def test_get_financial_data_no_api_key(mock_getenv):
     with pytest.raises(ValueError) as exc_info:
         get_financial_data()
 
-    assert "API ключ не найден. Убедитесь, что в .env есть API_ALPHAVANTAGE=..." in str(exc_info.value)
+    assert "API ключ не найден. Убедитесь, что в .env есть API_ALPHAVANTAGE=..." in str(
+        exc_info.value
+    )

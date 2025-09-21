@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 
+from src.services import analyze_cashback
 from src.utils import (analyze_cards, filter_operations_by_date,
                        get_financial_data, get_greeting,
                        get_top_5_transactions, process_excel)
@@ -69,6 +70,40 @@ if __name__ == "__main__":
 
         # Выводим красиво в консоль
         print(json.dumps(report, ensure_ascii=False, indent=2))
+
+    except Exception as e:
+        print(f"❌ Ошибка: {e}")
+
+
+def generate_services_report(excel_file_path: str, year: int, month: int) -> str:
+    """
+    Возвращает JSON-строку с информацией о кешбэке по категориям за указанный год и месяц.
+    """
+    # 1. Обрабатываем Excel
+    df = process_excel(excel_file_path)
+    data = df.to_dict(orient="records")
+
+    # 2. Получаем отчёт по кешбэку — используем переданные year и month
+    cashback_result = analyze_cashback(data, year, month)
+
+    # 3. Убеждаемся, что возвращаем именно строку JSON
+    if isinstance(cashback_result, dict):
+        return json.dumps(cashback_result, ensure_ascii=False, indent=4)
+
+    # Если уже строка — возвращаем как есть
+    return cashback_result
+
+
+if __name__ == "__main__":
+    try:
+        # Получаем путь только при запуске скрипта
+        excel_path = get_operations_file_path()
+
+        # Генерируем отчёт (возвращает строку JSON)
+        cashback_result = generate_services_report(excel_path, 2020, 11)
+
+        # Выводим как есть — это уже красиво отформатированный JSON
+        print(cashback_result)
 
     except Exception as e:
         print(f"❌ Ошибка: {e}")
