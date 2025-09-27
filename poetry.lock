@@ -56,6 +56,16 @@ files = [
 ]
 
 [[package]]
+name = "chandler-reportplugin"
+version = "0.1"
+description = "Progress reports for Chandler"
+optional = false
+python-versions = "*"
+files = [
+    {file = "Chandler-ReportPlugin-0.1.tar.gz", hash = "sha256:4f2f63358f2df1a9f597c947eee771719b2e86489527b5a1d94e1064e8fb4b59"},
+]
+
+[[package]]
 name = "charset-normalizer"
 version = "3.4.3"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
@@ -837,4 +847,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.13"
-content-hash = "4366bc3726922d35e1bd639a65d9a35eb6f49e287b693e379c4a8b2d77114929"
+content-hash = "ea914f5f88cd0a2d9b71647719ef74eb4d0dcfc015889b9c6a173d7c54d666b8"

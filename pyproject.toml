@@ -12,6 +12,7 @@ pandas = "^2.3.2"
 requests = "^2.32.5"
 python-dotenv = "^1.1.1"
 pytest = "^8.4.2"
+chandler-reportplugin = "^0.1"
 
 
 [tool.poetry.group.dev.dependencies]

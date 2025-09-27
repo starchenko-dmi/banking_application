@@ -1,10 +1,13 @@
 import json
 from pathlib import Path
 
+from src.reports import report_to_file, spending_by_category
 from src.services import analyze_cashback
 from src.utils import (analyze_cards, filter_operations_by_date,
                        get_financial_data, get_greeting,
                        get_top_5_transactions, process_excel)
+
+df = None
 
 
 def get_operations_file_path(filename: str = "operations.xlsx") -> str:
@@ -31,6 +34,7 @@ def generate_financial_report(excel_file_path: str, target_date_str: str) -> dic
     - Курсы валют и цены акций
     """
     # 1. Обрабатываем Excel
+    global df
     df = process_excel(excel_file_path)
 
     # 2. Фильтруем операции по дате
@@ -107,3 +111,12 @@ if __name__ == "__main__":
 
     except Exception as e:
         print(f"❌ Ошибка: {e}")
+
+
+if __name__ == "__main__":
+
+    @report_to_file()
+    def my_report(transactions, category, date=None):
+        return spending_by_category(transactions, category, date)
+
+    result = my_report(df, "Супермаркеты", "2020-04-01")
