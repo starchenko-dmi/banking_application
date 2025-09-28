@@ -5,9 +5,14 @@ import pandas as pd
 import pytest
 
 # Подменяем импорты, если utils.py находится в src/
-from src.utils import (analyze_cards, filter_operations_by_date,
-                       get_financial_data, get_greeting,
-                       get_top_5_transactions, process_excel)
+from src.utils import (
+    analyze_cards,
+    filter_operations_by_date,
+    get_financial_data,
+    get_greeting,
+    get_top_5_transactions,
+    process_excel,
+)
 
 
 # ============ Тесты для process_excel ============
@@ -68,34 +73,19 @@ def test_filter_operations_by_date():
 
 
 # ============ Тесты для get_greeting ============
+@pytest.mark.parametrize(
+    "hour, expected",
+    [
+        (8, "Доброе утро"),
+        (13, "Добрый день"),
+        (20, "Добрый вечер"),
+        (3, "Доброй ночи"),
+    ],
+)
 @patch("src.utils.datetime")
-def test_get_greeting(mock_datetime):
-    """
-    Тестирует функцию get_greeting на корректное определение приветствия по времени суток.
-
-    Проверяет возврат соответствующей строки в зависимости от текущего часа:
-    - 6-11: "Доброе утро"
-    - 12-17: "Добрый день"
-    - 18-23: "Добрый вечер"
-    - 0-5: "Доброй ночи"
-
-    Используется мокирование datetime.now() для управления "текущим временем".
-    """
-    # Утро
-    mock_datetime.now.return_value.hour = 8
-    assert get_greeting() == "Доброе утро"
-
-    # День
-    mock_datetime.now.return_value.hour = 13
-    assert get_greeting() == "Добрый день"
-
-    # Вечер
-    mock_datetime.now.return_value.hour = 20
-    assert get_greeting() == "Добрый вечер"
-
-    # Ночь
-    mock_datetime.now.return_value.hour = 3
-    assert get_greeting() == "Доброй ночи"
+def test_get_greeting_parametrized(mock_datetime, hour, expected):
+    mock_datetime.now.return_value.hour = hour
+    assert get_greeting() == expected
 
 
 # ============ Тесты для analyze_cards ============

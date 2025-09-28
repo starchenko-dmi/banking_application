@@ -39,7 +39,7 @@ def analyze_cashback(data, year: int, month: int) -> str:
         else:
             cashback_by_category[category] = cashback
 
-    # Округляем до 2 знаков (если нужно — можно убрать)
+    # Округляем до 2 знаков
     cashback_by_category = {
         category: round(amount, 2) for category, amount in cashback_by_category.items()
     }

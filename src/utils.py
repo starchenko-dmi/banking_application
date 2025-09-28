@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from pathlib import Path
 
 import pandas as pd
 import requests
@@ -79,8 +80,19 @@ def get_greeting() -> str:
         return "Доброй ночи"
 
 
-# Пример использования:
-print(f'"{get_greeting()}"')
+def get_operations_file_path(filename: str = "operations.xlsx") -> str:
+    """
+    Возвращает абсолютный путь к файлу в папке 'data',
+    находящейся на одном уровне с папкой 'src'.
+    """
+    current_file = Path(__file__).resolve()
+    project_root = current_file.parent.parent  # поднимаемся из src в корень
+    file_path = project_root / "data" / filename
+
+    if not file_path.exists():
+        raise FileNotFoundError(f"Файл не найден: {file_path}")
+
+    return str(file_path)
 
 
 def analyze_cards(operations: list) -> list:
@@ -225,10 +237,6 @@ def get_financial_data() -> dict:
                 "apikey": API_KEY,
             }
             response = requests.get(BASE_URL, params=params, timeout=10)
-            print(
-                f"Статус Alpha Vantage для {curr['from']}/{curr['to']}: {response.status_code}"
-            )
-            print(f"Ответ: {response.text[:500]}")
 
             response.raise_for_status()
             data = response.json()
@@ -240,16 +248,12 @@ def get_financial_data() -> dict:
                     {"currency": curr["key"], "rate": round(rate, 2)}
                 )
                 obtained_currencies.add(curr["key"])  # Запоминаем, что курс получен
-            else:
-                print(
-                    f"Нет данных по курсу {curr['from']}/{curr['to']} в Alpha Vantage"
-                )
+
         except Exception as e:
             print(f"Ошибка Alpha Vantage для {curr['from']}/{curr['to']}: {e}")
 
         # Если курс не был получен — попробуем через ЦБ РФ
         if curr["key"] not in obtained_currencies:
-            print(f"Пробуем получить {curr['key']}/RUB из ЦБ РФ...")
             cbr_rates = get_cbr_rates()
             if curr["key"] in cbr_rates:
                 rate = cbr_rates[curr["key"]]
@@ -257,9 +261,6 @@ def get_financial_data() -> dict:
                     {"currency": curr["key"], "rate": round(rate, 2)}
                 )
                 obtained_currencies.add(curr["key"])
-                print(f"Успешно получено из ЦБ РФ: {curr['key']} = {rate}")
-            else:
-                print(f"Не удалось получить курс {curr['key']}/RUB даже из ЦБ РФ")
 
     # --- Акции ---
     stocks = ["SPY", "AAPL", "AMZN", "GOOGL", "MSFT", "TSLA"]
