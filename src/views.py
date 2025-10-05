@@ -47,22 +47,3 @@ def generate_financial_report(excel_file_path: str, target_date_str: str) -> dic
     }
 
     return report
-
-
-def generate_services_report(excel_file_path: str, year: int, month: int) -> str:
-    """
-    Возвращает JSON-строку с информацией о кешбэке по категориям за указанный год и месяц.
-    """
-    # 1. Обрабатываем Excel
-    df = process_excel(excel_file_path)
-    data = df.to_dict(orient="records")
-
-    # 2. Получаем отчёт по кешбэку — используем переданные year и month
-    cashback_result = analyze_cashback(data, year, month)
-
-    # 3. Убеждаемся, что возвращаем именно строку JSON
-    if isinstance(cashback_result, dict):
-        return json.dumps(cashback_result, ensure_ascii=False, indent=4)
-
-    # Если уже строка — возвращаем как есть
-    return cashback_result
