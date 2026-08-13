@@ -1,8 +1,9 @@
 import json
 
 from src.reports import spending_by_category, report_to_file
+from src.services import generate_services_report
 from src.utils import process_excel, get_operations_file_path
-from src.views import generate_financial_report, generate_services_report
+from src.views import generate_financial_report
 
 if __name__ == "__main__":
     try:
