@@ -100,32 +100,40 @@ def analyze_cards(operations: list) -> list:
     Анализирует операции по картам и возвращает список словарей с данными:
     - last_digits: последние 4 цифры карты
     - total_spent: общая сумма расходов (по модулю)
-    - cashback: кешбэк 1% от суммы расходов (т.е. 1 рубль на каждые 100 рублей = 0.01 * total_spent)
-
-    :param operations: список словарей с операциями, с ключами 'Номер карты' и 'Сумма операции'
-    :return: список словарей с анализом по каждой карте
+    - cashback: кешбэк 1% от суммы расходов
     """
     from collections import defaultdict
 
     card_expenses = defaultdict(float)
 
     for op in operations:
-        card_number = str(op.get("Номер карты", "")).strip()
+        card_number_raw = op.get("Номер карты")
+
+        if card_number_raw is None:
+            continue
+
+        card_number = str(card_number_raw).strip()
+
+        # Пропускаем пустые значения и pandas NaN
+        if not card_number or card_number.lower() == "nan":
+            continue
+
         amount = op.get("Сумма операции", 0)
 
-        # Пропускаем, если нет номера карты или сумма нечисловая
-        if not card_number or not isinstance(amount, (int, float)):
+        # Пропускаем, если сумма нечисловая
+        if not isinstance(amount, (int, float)):
             continue
 
         # Берем только расходы (отрицательные суммы)
         if amount < 0:
             last_4 = card_number[-4:] if len(card_number) >= 4 else card_number
-            card_expenses[last_4] += abs(amount)  # суммируем по модулю
+            card_expenses[last_4] += abs(amount)
 
-    # Формируем результат
     result = []
+
     for last_4, total_spent in card_expenses.items():
-        cashback = round(total_spent * 0.01, 2)  # 1% кешбэка
+        cashback = round(total_spent * 0.01, 2)
+
         result.append(
             {
                 "last_digits": last_4,
